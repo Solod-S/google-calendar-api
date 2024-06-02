@@ -44,11 +44,12 @@ This Node.js application demonstrates integration with the Google Calendar API. 
 
 ## Usage
 
-1. Open your browser and navigate to `http://localhost:3000`.
+1. Open your browser and navigate to `https://localhost:3000`.
 2. You will be redirected to the Google sign-in page.
 3. After signing in and granting permissions, you will be redirected back with a message indicating a successful login.
-4. Access `http://localhost:3000/calendars` to list all your Google Calendars.
-5. Access `http://localhost:3000/events` to list the upcoming events from your primary Google Calendar. You can specify a different calendar by adding `?calendar=your_calendar_id` to the URL.
+4. Access `https://localhost:3000/calendars` to list all your Google Calendars.
+5. Access `https://localhost:3000/events` to list the upcoming events from your primary Google Calendar. You can specify a different calendar by adding `?calendar=your_calendar_id` to the URL.
+6. Access `https://localhost:3000/refresh-token/:${refresh_token}` to refresh the access token.
 
 ## Contributing
 
@@ -60,5 +61,5 @@ Contributions are welcome. Please open an issue first to discuss what you would 
 
 ## Acknowledgements
 
-- [Google APIs Node.js Client](https://github.com/googleapis/google-api-nodejs-client)
+- [Google APIs Node.js Client](https://github.com/Solod-S/google-calendar-api)
 - [Google Calendar API Documentation](https://developers.google.com/calendar)
