@@ -1,11 +1,12 @@
 # Google Calendar API Integration with Node.js
 
-This Node.js application demonstrates integration with the Google Calendar API. It allows users to authenticate via Google, list their calendars, and view upcoming events in their Google Calendar.
+This Node.js application demonstrates integration with the Google Calendar API. It allows users to authenticate via Google, list their calendars and tasks, and view upcoming events in their Google Calendar.
 
 ## Features
 
 - OAuth2 Google Authentication
 - Listing all Google Calendars
+- Listing all Google Tasks
 - Viewing upcoming events in specified Google Calendars
 
 ## Getting Started
@@ -48,8 +49,9 @@ This Node.js application demonstrates integration with the Google Calendar API. 
 2. You will be redirected to the Google sign-in page.
 3. After signing in and granting permissions, you will be redirected back with a message indicating a successful login.
 4. Access `https://localhost:3000/calendars` to list all your Google Calendars.
-5. Access `https://localhost:3000/events` to list the upcoming events from your primary Google Calendar. You can specify a different calendar by adding `?calendar=your_calendar_id` to the URL.
-6. Access `https://localhost:3000/refresh-token/:${refresh_token}` to refresh the access token.
+5. Access `https://localhost:3000/tasks` to list all your Google Tasks.
+6. Access `https://localhost:3000/events` to list the upcoming events from your primary Google Calendar. You can specify a different calendar by adding `?calendar=your_calendar_id` to the URL.
+7. Access `https://localhost:3000/refresh-token/:${refresh_token}` to refresh the access token.
 
 ## Contributing
 

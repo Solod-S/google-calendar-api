@@ -32,7 +32,10 @@ app.get("/", (req, res) => {
   // Generate the Google authentication URL
   const url = oauth2Client.generateAuthUrl({
     access_type: "offline", // Request offline access to receive a refresh token
-    scope: "https://www.googleapis.com/auth/calendar.readonly", // Scope for read-only access to the calendar
+    scope: [
+      "https://www.googleapis.com/auth/calendar.readonly",
+      "https://www.googleapis.com/auth/tasks.readonly",
+    ], // Scope for read-only access to the calendar
   });
   // Redirect the user to Google's OAuth 2.0 server
   res.redirect(url);
@@ -57,6 +60,72 @@ app.get("/redirect", (req, res) => {
     // Notify the user of a successful login
     res.send("Successfully logged in");
   });
+});
+
+// Route to list tasks from a specified task list
+// app.get("/tasks", (req, res) => {
+//   // Get the task list ID from the query string, default to '@default'
+//   const taskListId = req.query.tasklist ?? "@default";
+//   // Create a Google Tasks API client
+//   const tasks = google.tasks({ version: "v1", auth: oauth2Client });
+//   // List tasks from the specified task list
+//   tasks.tasks.list(
+//     {
+//       tasklist: taskListId,
+//       maxResults: 15,
+//       showCompleted: false,
+//       showHidden: true,
+//     },
+//     (err, response) => {
+//       if (err) {
+//         // Handle error if the API request fails
+//         console.error("Can't fetch tasks", err);
+//         res.send("Error");
+//         return;
+//       }
+//       // Send the list of tasks as JSON
+//       const tasks = response.data.items;
+//       res.json(tasks);
+//     }
+//   );
+// });
+
+// Route to list tasks from a specified task list
+app.get("/tasks", (req, res) => {
+  // Get the task list ID from the query string, default to '@default'
+  const taskListId = req.query.tasklist ?? "@default";
+  // Create a Google Tasks API client
+  const tasks = google.tasks({ version: "v1", auth: oauth2Client });
+  // List tasks from the specified task list
+  tasks.tasks.list(
+    {
+      tasklist: taskListId,
+      maxResults: 100, // Increase maxResults to ensure we get all tasks and can filter them
+      showCompleted: false,
+      showHidden: true,
+    },
+    (err, response) => {
+      if (err) {
+        // Handle error if the API request fails
+        console.error("Can't fetch tasks", err);
+        res.send("Error");
+        return;
+      }
+      // Get current date and time
+      const now = new Date();
+      console.log(`response.data.items`, response.data.items);
+      // Filter tasks to exclude tasks that have already passed
+      const tasks = (response.data.items ?? []).filter(task => {
+        if (task.due) {
+          const dueDate = new Date(task.due);
+          return dueDate >= now;
+        }
+        return true; // Include tasks without a due date
+      });
+      // Send the filtered list of tasks as JSON
+      res.json(tasks);
+    }
+  );
 });
 
 // Route to list all calendars
@@ -106,6 +175,7 @@ app.get("/events", (req, res) => {
   );
 });
 
+
 // Route to refresh the access token
 app.get("/refresh-token", (req, res) => {
   // Extract the refresh token from the query parameter or from environment variables
@@ -133,6 +203,19 @@ app.get("/refresh-token", (req, res) => {
   });
 });
 
-// Start the Express server
-httpsServer.listen(3000, () => console.log("Server running at 3000"));
+app.get("/token-info", async (req, res) => {
+  try {
+    const info = await oauth2Client.getTokenInfo(
+      oauth2Client.credentials.access_token
+    );
+    res.json(info);
+  } catch (err) {
+    console.error("Error getting token info", err);
+    res.status(500).send("Failed to get token info");
+  }
+});
 
+// Start the Express server
+httpsServer.listen(3000, () =>
+  console.log("Server running at https://localhost:3000")
+);
