@@ -14,6 +14,8 @@ const privateKey = fs.readFileSync(privateKeyPath, "utf8");
 const certificate = fs.readFileSync(certificatePath, "utf8");
 const credentials = { key: privateKey, cert: certificate };
 
+const { PORT, DEV_URL, PRODUCT_URL } = process.env;
+
 // Initialize Express app
 const app = express();
 
@@ -175,7 +177,6 @@ app.get("/events", (req, res) => {
   );
 });
 
-
 // Route to refresh the access token
 app.get("/refresh-token", (req, res) => {
   // Extract the refresh token from the query parameter or from environment variables
@@ -215,7 +216,7 @@ app.get("/token-info", async (req, res) => {
   }
 });
 
-// Start the Express server
-httpsServer.listen(3000, () =>
-  console.log("Server running at https://localhost:3000")
-);
+// Start the Express server locally
+// httpsServer.listen(PORT, () => console.log(`Server running at ${DEV_URL}`));
+// Start the Express server in prod
+app.listen(PORT, () => console.log(`Server running at ${PRODUCT_URL}`));
