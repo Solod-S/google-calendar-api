@@ -34,7 +34,7 @@ This Node.js application demonstrates integration with the Google Calendar API. 
    ```
 4. Create a `.env` file in the root of your project and add your Google OAuth2 credentials:
    ```
-   CLIENT_ID=your_client_id
+   CLIENT_ID=CLIENT_ID
    SECRET_ID=your_client_secret
    REDIRECT=your_redirect_uri
    ```
@@ -45,13 +45,14 @@ This Node.js application demonstrates integration with the Google Calendar API. 
 
 ## Usage
 
-1. Open your browser and navigate to `https://localhost:3000`.
+1. Open your browser and navigate to `https://localhost:3003`.
 2. You will be redirected to the Google sign-in page.
 3. After signing in and granting permissions, you will be redirected back with a message indicating a successful login.
-4. Access `https://localhost:3000/calendars` to list all your Google Calendars.
-5. Access `https://localhost:3000/tasks` to list all your Google Tasks.
-6. Access `https://localhost:3000/events` to list the upcoming events from your primary Google Calendar. You can specify a different calendar by adding `?calendar=your_calendar_id` to the URL.
-7. Access `https://localhost:3000/refresh-token/:${refresh_token}` to refresh the access token.
+4. Access `https://localhost:3003/calendars` to list all your Google Calendars.
+5. Access `https://localhost:3003/tasks` to list all your Google Tasks.
+6. Access `https://localhost:3003/events` to list the upcoming events from your primary Google Calendar. You can specify a different calendar by adding `?calendar=your_calendar_id` to the URL.
+7. Access `https://localhost:3003/refresh-token/:${refresh_token}` to refresh the access token.
+8. Access `https://localhost:3003/exchange-code-to-token exchange code to refresh the access token
 
 ## Contributing
 

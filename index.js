@@ -5,7 +5,10 @@ const fs = require("fs");
 const path = require("path");
 // Import required modules
 const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
 const { google } = require("googleapis");
+const { default: axios } = require("axios");
 
 const privateKeyPath = path.resolve(__dirname, "certificates/key.pem");
 const certificatePath = path.resolve(__dirname, "certificates/cert.pem");
@@ -18,6 +21,8 @@ const { PORT, DEV_URL, PRODUCT_URL } = process.env;
 
 // Initialize Express app
 const app = express();
+app.use(bodyParser.json());
+app.use(cors());
 
 // Create HTTPS server
 const httpsServer = https.createServer(credentials, app);
@@ -26,7 +31,8 @@ const httpsServer = https.createServer(credentials, app);
 const oauth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
   process.env.SECRET_ID,
-  process.env.REDIRECT
+  "postmessage"
+  // process.env.REDIRECT
 );
 
 // Route to initiate Google OAuth2 flow
@@ -204,6 +210,20 @@ app.get("/refresh-token", (req, res) => {
   });
 });
 
+app.post("/exchange-code-to-token", async (req, res) => {
+  const { code } = req.body;
+
+  try {
+    const { tokens } = await oauth2Client.getToken(code);
+    console.log("Access Token:", tokens.access_token);
+    console.log("Refresh Token:", tokens.refresh_token);
+    res.json(tokens);
+  } catch (error) {
+    console.error("Error exchanging code:", error);
+    res.status(500).send("Failed to exchange code");
+  }
+});
+
 app.get("/token-info", async (req, res) => {
   try {
     const info = await oauth2Client.getTokenInfo(
@@ -219,4 +239,4 @@ app.get("/token-info", async (req, res) => {
 // Start the Express server locally
 // httpsServer.listen(PORT, () => console.log(`Server running at ${DEV_URL}`));
 // Start the Express server in prod
-app.listen(PORT, () => console.log(`Server running at ${PRODUCT_URL}`));
+app.listen(PORT, () => console.log(`Server running at ${DEV_URL}`));
