@@ -31,8 +31,8 @@ const httpsServer = https.createServer(credentials, app);
 const oauth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
   process.env.SECRET_ID,
-  "postmessage"
-  // process.env.REDIRECT
+  // "postmessage"
+  process.env.REDIRECT
 );
 
 // Route to initiate Google OAuth2 flow
@@ -214,7 +214,12 @@ app.post("/exchange-code-to-token", async (req, res) => {
   const { code } = req.body;
 
   try {
-    const { tokens } = await oauth2Client.getToken(code);
+    const clientWithoutRedirect = new google.auth.OAuth2(
+      process.env.CLIENT_ID,
+      process.env.SECRET_ID,
+      "postmessage"
+    );
+    const { tokens } = await clientWithoutRedirect.getToken(code);
     console.log("Access Token:", tokens.access_token);
     console.log("Refresh Token:", tokens.refresh_token);
     res.json(tokens);
